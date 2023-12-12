@@ -1,0 +1,30 @@
+{
+  "compilerOptions": {
+    "target": "es6",
+    "module": "commonjs",
+    "lib": [
+      "es2020",
+      "DOM"
+    ],
+    "allowJs": false,
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "outDir": "./bin",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true
+  },
+  "exclude": [
+    "build",
+    "dist",
+    "node_modules"
+  ],
+  "include": [
+    "test/**/*.ts"
+  ],
+  "files": [
+    "src/index.ts"
+  ]
+}
