@@ -1,6 +1,6 @@
 export const AppRoutes = {
     AppConfig: "/app-config",
-    RightPanel: "/right-panel",
+    MainApp: "/main-app",
     TabConfigAlt: "/config",
     LiveShareAutoJoin: "/live-share-auto-join",
     LiveShareManualJoin: "/live-share-manual-join",

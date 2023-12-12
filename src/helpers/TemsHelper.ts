@@ -1,3 +1,5 @@
+import {app, FrameContexts} from "@microsoft/teams-js";
+
 export default class TeamsHelper {
     public static inTeams(): boolean {
         const currentUrl = window.location.href;
@@ -7,5 +9,9 @@ export default class TeamsHelper {
             : new URL(window.location.href);
         const params = url.searchParams;
         return params.get("inTeams") === "true";
+    }
+
+    public static getAppContext(): FrameContexts | undefined {
+        return app.getFrameContext();
     }
 }

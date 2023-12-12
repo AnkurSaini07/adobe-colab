@@ -12,15 +12,15 @@ export default function AppConfig() {
     useEffect(() => {
         if (!IN_TEAMS) {
             navigate({
-                pathname: AppRoutes.RightPanel,
+                pathname: AppRoutes.MainApp,
                 search: "?inTeams=false"
             })
             return;
         }
         pages.config.registerOnSaveHandler(function (saveEvent) {
             pages.config.setConfig({
-                suggestedDisplayName: "Live Share React",
-                contentUrl: `${window.location.origin}${AppRoutes.RightPanel}?inTeams=true`,
+                suggestedDisplayName: "Acrobat LiveShare",
+                contentUrl: `${window.location.origin}${AppRoutes.MainApp}?inTeams=true`,
             });
             saveEvent.notifySuccess();
         });

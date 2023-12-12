@@ -1,35 +1,43 @@
-import {BrowserRouter as Router, Route, Routes} from "react-router-dom";
+import {BrowserRouter as Router, Route, Routes, useSearchParams} from "react-router-dom";
 import {AppRoutes} from "../constants";
 import AppConfig from "../pages/app-config";
-import React, {useState} from "react";
+import React from "react";
+import LiveShareProviderApp from "../components/live-share-provider-app";
 import TeamsHelper from "../helpers/TemsHelper";
-import {LiveShareHost} from "@microsoft/teams-js";
-import {ILiveShareClientOptions, TestLiveShareHost} from "@microsoft/live-share";
-import {LiveShareProvider} from "@microsoft/live-share-react";
+import {FrameContexts} from "@microsoft/teams-js";
+import Splash from "../components/splash";
+import {useLivePresence} from "@microsoft/live-share-react";
 
-const RightPanel = React.lazy(() => import('../pages/right-panel'));
+const SidePanel = React.lazy(() => import('../pages/side-panel'));
+const PdfViewer = React.lazy(() => import('../pages/pdf-viewer'));
 
-const clientOptions: ILiveShareClientOptions = {
-    connection: {
-        type: "remote",
-        endpoint: "https://76f87e58cc65.ngrok.app/"
+function MainApp() {
+    const [params] = useSearchParams();
+    const {localUser} = useLivePresence("UNIQUE-PRESENCE-KEY");
+    if (!localUser) {
+        return <Splash>Loading app..., please wait.</Splash>
     }
-};
+    if (TeamsHelper.getAppContext() === FrameContexts.sidePanel) {
+        return <SidePanel localUser={localUser}/>
+    }
+    if (TeamsHelper.getAppContext() === FrameContexts.meetingStage) {
+        if (!params.has("userId")) {
+            return <Splash>Click on "launch app" in side panel.</Splash>
+        }
+        return <PdfViewer localUser={localUser} organizerId={params.get("userId")} divId="pdf-viewer"/>
+    }
+}
 
 export default function App() {
-
-    const [host] = useState(
-        TeamsHelper.inTeams() ? LiveShareHost.create() : TestLiveShareHost.create()
-    );
 
     return (
         <Router window={window} basename="/">
             <Routes>
                 <Route path={AppRoutes.AppConfig} element={<AppConfig/>}/>
-                <Route path={AppRoutes.RightPanel} element={
-                    <LiveShareProvider clientOptions={clientOptions} joinOnLoad={true} host={host}>
-                        <RightPanel/>
-                    </LiveShareProvider>
+                <Route path={AppRoutes.MainApp} element={
+                    <LiveShareProviderApp>
+                        <MainApp/>
+                    </LiveShareProviderApp>
                 }/>
             </Routes>
         </Router>
