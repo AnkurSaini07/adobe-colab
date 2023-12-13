@@ -1,8 +1,9 @@
-import {useEffect, useState} from "react";
+import {useCallback, useEffect, useState} from "react";
 import {useLiveEvent, useSharedMap, useSharedState} from "@microsoft/live-share-react";
 import {LivePresenceUser} from "@microsoft/live-share";
 import useAdobeViewer from "./useAdobeViewer";
 import TeamsHelper from "../../helpers/TemsHelper";
+import PdfControls from "./PdfControls";
 
 type Session = "pending" | "completed";
 
@@ -10,6 +11,7 @@ interface PdfViewerProps {
     divId: string;
     organizerId: any;
     localUser: LivePresenceUser;
+    allUsers: Array<LivePresenceUser>;
 }
 
 const eventOptions = {
@@ -20,14 +22,17 @@ const eventOptions = {
 
 
 export default function PdfViewer(props: PdfViewerProps) {
-    const {divId, localUser, organizerId} = props;
-    const {viewer, annotationManager} = useAdobeViewer({divId, localUser});
+    const {divId, localUser, organizerId, allUsers} = props;
 
     const {map, setEntry, deleteEntry} = useSharedMap(`annotation-map-${divId}`);
     const [session, setSession] = useSharedState<Session>(`session-${divId}`, "pending");
     const {latestEvent, sendEvent} = useLiveEvent(`annot-change-${divId}`);
+    const [presenterId, setPresenterId] = useSharedState<string>(`presenter-state-${divId}`, organizerId);
     const [eventProcessed] = useState<Set<String>>(new Set());
     const [synced, setSynced] = useState<boolean>(false);
+    const [isViewerDisabled, setViewerDisabled] = useState<boolean>(true);
+
+    const {viewer, annotationManager} = useAdobeViewer({divId, localUser, presenterId, isViewerDisabled});
 
     // create session
     useEffect(() => {
@@ -47,7 +52,6 @@ export default function PdfViewer(props: PdfViewerProps) {
     useEffect(() => {
         if (annotationManager && session === "completed" && synced) {
             annotationManager.registerEventListener((event: any) => {
-                console.log("===========local event=======>", event);
                 const annot = event.data;
                 if (eventProcessed.has(annot.id)) {
                     eventProcessed.delete(annot.id);
@@ -80,13 +84,12 @@ export default function PdfViewer(props: PdfViewerProps) {
     // listen for global events
     useEffect(() => {
         if (annotationManager && session === "completed" && latestEvent && !latestEvent.local) {
-            console.log("Global events ========>", latestEvent);
             const annot = latestEvent.value.data;
             eventProcessed.add(annot.id);
             if (latestEvent.value.type === "ANNOTATION_ADDED") {
-                annotationManager.addAnnotations([annot]);
+                annotationManager.addAnnotations([annot], {silent: true});
             } else if (latestEvent.value.type === "ANNOTATION_UPDATED") {
-                annotationManager.updateAnnotation(annot);
+                annotationManager.updateAnnotation(annot, {silent: true});
             } else if (latestEvent.value.type === "ANNOTATION_DELETED") {
                 annotationManager.deleteAnnotations({
                     annotationIds: [annot.id]
@@ -96,9 +99,38 @@ export default function PdfViewer(props: PdfViewerProps) {
 
     }, [session, latestEvent, annotationManager, eventProcessed]);
 
+
+    const handleViewerChange = useCallback((options: any) => {
+        setViewerDisabled(options.isDisabled);
+    }, [setViewerDisabled]);
+
     return (
-        <div style={{display: "flex", position: "relative", justifyContent: "center"}}>
-            <div style={{height: "100vh", width: "100vw"}} id={divId}/>
+        <div style={{
+            display: "flex",
+            flexDirection: "column",
+            position: "relative",
+            justifyContent: "center",
+            height: "100vh",
+            width: "100vw"
+        }}>
+            <div style={{flex: 1, position: "relative"}}>
+                {isViewerDisabled && <div style={{
+                    height: "100%",
+                    width: "100%",
+                    position: "absolute",
+                    zIndex: 10,
+                    backgroundColor: "transparent"
+                }}/>}
+                <div style={{flex: 1}} id={divId}/>
+            </div>
+            <PdfControls
+                presenterId={presenterId}
+                setPresenterId={setPresenterId}
+                handleViewerChange={handleViewerChange}
+                divId={divId}
+                localUser={localUser}
+                allUsers={allUsers}
+                organizerId={organizerId}/>
             {
                 viewer && session === "pending" &&
                 <div style={{

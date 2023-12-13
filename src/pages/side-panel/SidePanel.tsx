@@ -4,6 +4,7 @@ import {LivePresenceUser} from "@microsoft/live-share";
 import {useSearchParams} from "react-router-dom";
 import {useCallback} from "react";
 import TeamsHelper from "../../helpers/TemsHelper";
+import {Button} from "@adobe/react-spectrum";
 
 interface RightPanelPageProps {
     id: string;
@@ -36,7 +37,7 @@ export default function SidePanel(props: SidePanelProps) {
 
     return (
         <>
-            <button onClick={launchAppToStage}>launch app</button>
+            <Button variant="cta" onPress={launchAppToStage}>launch app</Button>
             {/*<Counter id="1"/>
             <Counter id="2"/>*/}
         </>

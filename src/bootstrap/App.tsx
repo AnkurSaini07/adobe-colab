@@ -7,13 +7,12 @@ import TeamsHelper from "../helpers/TemsHelper";
 import {FrameContexts} from "@microsoft/teams-js";
 import Splash from "../components/splash";
 import {useLivePresence} from "@microsoft/live-share-react";
-
-const SidePanel = React.lazy(() => import('../pages/side-panel'));
-const PdfViewer = React.lazy(() => import('../pages/pdf-viewer'));
+import SidePanel from "../pages/side-panel";
+import PdfViewer from "../pages/pdf-viewer";
 
 function MainApp() {
     const [params] = useSearchParams();
-    const {localUser} = useLivePresence("UNIQUE-PRESENCE-KEY");
+    const {localUser, allUsers} = useLivePresence("UNIQUE-PRESENCE-KEY");
     if (!localUser) {
         return <Splash>Loading app..., please wait.</Splash>
     }
@@ -24,7 +23,10 @@ function MainApp() {
         if (!params.has(AppParams.USER_ID)) {
             return <Splash>Click on "launch app" in side panel.</Splash>
         }
-        return <PdfViewer localUser={localUser} organizerId={params.get(AppParams.USER_ID)} divId="pdf-viewer"/>
+        return <PdfViewer localUser={localUser}
+                          allUsers={allUsers}
+                          organizerId={params.get(AppParams.USER_ID)}
+                          divId="pdf-viewer"/>
     }
 }
 

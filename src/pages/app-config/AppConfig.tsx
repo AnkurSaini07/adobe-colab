@@ -23,7 +23,7 @@ export default function AppConfig() {
         pages.config.registerOnSaveHandler(function (saveEvent) {
             pages.config.setConfig({
                 suggestedDisplayName: "Acrobat LiveShare",
-                contentUrl: `${window.location.origin}${AppRoutes.MainApp}?${params.toString}`,
+                contentUrl: `${window.location.origin}${AppRoutes.MainApp}?${params.toString()}`,
             });
             saveEvent.notifySuccess();
         });
