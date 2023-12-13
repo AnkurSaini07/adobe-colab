@@ -1,5 +1,5 @@
 import {BrowserRouter as Router, Route, Routes, useSearchParams} from "react-router-dom";
-import {AppRoutes} from "../constants";
+import {AppParams, AppRoutes} from "../constants";
 import AppConfig from "../pages/app-config";
 import React from "react";
 import LiveShareProviderApp from "../components/live-share-provider-app";
@@ -21,10 +21,10 @@ function MainApp() {
         return <SidePanel localUser={localUser}/>
     }
     if (TeamsHelper.getAppContext() === FrameContexts.meetingStage) {
-        if (!params.has("userId")) {
+        if (!params.has(AppParams.USER_ID)) {
             return <Splash>Click on "launch app" in side panel.</Splash>
         }
-        return <PdfViewer localUser={localUser} organizerId={params.get("userId")} divId="pdf-viewer"/>
+        return <PdfViewer localUser={localUser} organizerId={params.get(AppParams.USER_ID)} divId="pdf-viewer"/>
     }
 }
 

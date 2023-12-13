@@ -1,7 +1,9 @@
 import {useSharedState} from "@microsoft/live-share-react";
-import * as teams from "@microsoft/teams-js";
-import {AppRoutes} from "../../constants";
+import {AppParams, AppRoutes} from "../../constants";
 import {LivePresenceUser} from "@microsoft/live-share";
+import {useSearchParams} from "react-router-dom";
+import {useCallback} from "react";
+import TeamsHelper from "../../helpers/TemsHelper";
 
 interface RightPanelPageProps {
     id: string;
@@ -24,11 +26,13 @@ export function Counter(props: RightPanelPageProps) {
 export default function SidePanel(props: SidePanelProps) {
 
     const {localUser} = props;
+    const [params] = useSearchParams();
 
-    const launchAppToStage = () => {
-        teams.meeting.shareAppContentToStage(() => {
-        }, `${window.location.origin}${AppRoutes.MainApp}?inTeams=true&userId=${localUser?.userId}`)
-    }
+    const launchAppToStage = useCallback(() => {
+        params.set(AppParams.USER_ID, localUser.userId);
+        TeamsHelper.launchAppInMeetingStage(`${window.location.origin}${AppRoutes.MainApp}`, params, window.location.hash);
+
+    }, [params, localUser]);
 
     return (
         <>

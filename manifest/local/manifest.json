@@ -26,7 +26,7 @@
     "accentColor": "#38a2ff",
     "configurableTabs": [
         {
-            "configurationUrl": "https://ankurs-msteams.ngrok.io/app-config?inTeams=true",
+            "configurationUrl": "https://ankurs-msteams.ngrok.io/app-config?in_teams=true",
             "canUpdateConfiguration": false,
             "scopes": [
                 "groupchat",
