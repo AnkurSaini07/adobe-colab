@@ -30,7 +30,7 @@ export default function PdfControls(props: PdfControlsProps) {
             });
         }
         return keys;
-    }, [localUser, organizerId]);
+    }, [localUser, organizerId, allUsers]);
 
 
     useEffect(() => {
@@ -56,6 +56,7 @@ export default function PdfControls(props: PdfControlsProps) {
                            setPresenterId={setPresenterId}/>
             <EditModeSwitch onChange={setEditMode} presenterId={presenterId} localUser={localUser}/>
             <View flex={1}/>
+            <span>{Array.from(disabledKeys).toString()}</span>
             <PresenterInfo presenterId={presenterId} allUsers={allUsers} localUser={localUser}/>
         </View>
     )
