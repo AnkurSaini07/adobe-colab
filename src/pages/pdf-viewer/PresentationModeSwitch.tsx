@@ -2,13 +2,13 @@ import {Switch} from "@adobe/react-spectrum";
 import {useMemo} from "react";
 import {LivePresenceUser} from "@microsoft/live-share";
 
-interface EditModeSwitchInterface {
+interface PresentationModeSwitchInterface {
     localUser: LivePresenceUser;
     presenterId: string;
     onChange: (value: boolean) => void;
 }
 
-export default function EditModeSwitch(props: EditModeSwitchInterface) {
+export default function PresentationModeSwitch(props: PresentationModeSwitchInterface) {
     const {presenterId, localUser, onChange} = props;
 
     const isDisabled = useMemo(() => {
@@ -17,6 +17,6 @@ export default function EditModeSwitch(props: EditModeSwitchInterface) {
     }, [presenterId, localUser])
 
     return (
-        <Switch onChange={onChange} isDisabled={isDisabled}>Edit Mode</Switch>
+        <Switch defaultSelected={true} onChange={onChange} isDisabled={isDisabled}>Presentation Mode</Switch>
     )
 }

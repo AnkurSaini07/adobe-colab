@@ -20,7 +20,7 @@ export default function PresenterInfo(props: PresenterInfoProps) {
     }, [localUser, presenterId, allUsers]);
 
     return (
-        <Text width="150px" UNSAFE_style={{textAlign: "center"}}>
+        <Text width="250px" UNSAFE_style={{textAlign: "center"}}>
             {localUser.userId === presenterId && "You are controlling this presentation."}
             {localUser.userId !== presenterId && presenter && `${presenter.displayName} is controlling this presentation.`}
         </Text>

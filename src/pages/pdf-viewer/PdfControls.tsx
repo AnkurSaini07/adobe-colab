@@ -5,7 +5,7 @@ import TeamsHelper from "../../helpers/TemsHelper";
 import UserDropdown from "./UserDropdown";
 import PresenterInfo from "./PresenterInfo";
 import ControlButton from "./ControlButton";
-import EditModeSwitch from "./EditModeSwitch";
+import PresentationModeSwitch from "./PresentationModeSwitch";
 
 interface PdfControlsProps {
     localUser: LivePresenceUser;
@@ -19,7 +19,7 @@ interface PdfControlsProps {
 
 export default function PdfControls(props: PdfControlsProps) {
     const {localUser, organizerId, allUsers, divId, presenterId, handleViewerChange, setPresenterId} = props;
-    const [editMode, setEditMode] = useState<boolean>(false);
+    const [presentationMode, setPresentationMode] = useState<boolean>(false);
 
     const disabledKeys = useMemo(() => {
         const keys: Set<string> = new Set<string>();
@@ -35,11 +35,11 @@ export default function PdfControls(props: PdfControlsProps) {
 
     useEffect(() => {
         let isDisabled = false;
-        if (localUser.userId !== presenterId && !editMode) {
+        if (localUser.userId !== presenterId && presentationMode) {
             isDisabled = true;
         }
         handleViewerChange({isDisabled});
-    }, [localUser, presenterId, handleViewerChange, editMode]);
+    }, [localUser, presenterId, handleViewerChange, presentationMode]);
 
 
     return (
@@ -47,6 +47,7 @@ export default function PdfControls(props: PdfControlsProps) {
             display: "flex",
             padding: "10px",
             alignItems: "center",
+            justifyContent: "center",
             gap: "10px"
         }}
               backgroundColor="gray-50" height="60px" zIndex={10} borderColor="gray-200" borderWidth="thin">
@@ -54,9 +55,7 @@ export default function PdfControls(props: PdfControlsProps) {
             <UserDropdown allUsers={allUsers} disabledKeys={disabledKeys} setPresenterId={setPresenterId}/>
             <ControlButton localUser={localUser} organizerId={organizerId} presenterId={presenterId}
                            setPresenterId={setPresenterId}/>
-            <EditModeSwitch onChange={setEditMode} presenterId={presenterId} localUser={localUser}/>
-            <View flex={1}/>
-            <span>{Array.from(disabledKeys).toString()}</span>
+            <PresentationModeSwitch onChange={setPresentationMode} presenterId={presenterId} localUser={localUser}/>
             <PresenterInfo presenterId={presenterId} allUsers={allUsers} localUser={localUser}/>
         </View>
     )
