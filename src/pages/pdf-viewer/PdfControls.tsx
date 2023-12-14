@@ -19,7 +19,7 @@ interface PdfControlsProps {
 
 export default function PdfControls(props: PdfControlsProps) {
     const {localUser, organizerId, allUsers, divId, presenterId, handleViewerChange, setPresenterId} = props;
-    const [presentationMode, setPresentationMode] = useState<boolean>(false);
+    const [presentationMode, setPresentationMode] = useState<boolean>(true);
 
     const disabledKeys = useMemo(() => {
         const keys: Set<string> = new Set<string>();
@@ -34,9 +34,9 @@ export default function PdfControls(props: PdfControlsProps) {
 
 
     useEffect(() => {
-        let isDisabled = false;
-        if (localUser.userId !== presenterId && presentationMode) {
-            isDisabled = true;
+        let isDisabled = true;
+        if (localUser.userId === presenterId || !presentationMode) {
+            isDisabled = false;
         }
         handleViewerChange({isDisabled});
     }, [localUser, presenterId, handleViewerChange, presentationMode]);
